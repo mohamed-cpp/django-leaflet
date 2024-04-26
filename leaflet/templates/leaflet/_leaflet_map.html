@@ -12,6 +12,18 @@
         {% if not NO_GLOBALS %}
         window['leafletmap' + '{{ name }}'] = map;
         {% endif %}
+          var geocoder = L.Control.geocoder({
+            defaultMarkGeocode: false
+        }).on('markgeocode', function(e) {
+            var bbox = e.geocode.bbox;
+            var poly = L.polygon([
+                bbox.getSouthEast(),
+                bbox.getNorthEast(),
+                bbox.getNorthWest(),
+                bbox.getSouthWest()
+            ]).addTo(map);
+            map.fitBounds(poly.getBounds());
+        }).addTo(map);
     }
     var loadevents = {% autoescape off %}{{ loadevents }}{% endautoescape %};
     if (loadevents.length === 0) loadmap();
